@@ -34,9 +34,9 @@ def do_succession(
     summed_populations = old_population + new_population
     returned_population: list[tuple[Vector, Vector, float]] = []
     for _ in old_population:
-        best_element = max(summed_populations, key=lambda x: x[2])
+        index, best_element = min(list(enumerate(summed_populations)), key=lambda x: x[1][2])
         returned_population.append(best_element)
-        summed_populations.remove(best_element)
+        summed_populations.pop(index)
     return returned_population
 
 
@@ -45,7 +45,7 @@ def es_mu_plus_lambda(initial_population: list[Vector], fitness: Callable[[Vecto
     iteration = 0
     population = [(element, np.ones_like(element, dtype=np.float64) * intial_mutation_strength, fitness(element))
                   for element in initial_population]
-    best_element, _, best_fitness = max(population, key=lambda x: x[2])
+    best_element, _, best_fitness = min(population, key=lambda x: x[2])
 
     while iteration < max_iterations:
         reproduction_population = [element[:2] for element in choices(population, k=lambd)]
@@ -53,8 +53,8 @@ def es_mu_plus_lambda(initial_population: list[Vector], fitness: Callable[[Vecto
         mutated_population = do_mutation(crossed_over_population)
 
         new_population = [(element[0], element[1], fitness(element[0])) for element in mutated_population]
-        new_best_element, _, new_best_fitness = max(new_population, key=lambda x: x[2])
-        if new_best_fitness > best_fitness:
+        new_best_element, _, new_best_fitness = min(new_population, key=lambda x: x[2])
+        if new_best_fitness < best_fitness:
             best_element, best_fitness = new_best_element, new_best_fitness
 
         population = do_succession(population, new_population)
