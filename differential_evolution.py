@@ -15,12 +15,14 @@ def do_crossover(element_1: Vector, element_2: Vector, threshold: float) -> Vect
     return result
 
 
-def diff_evo(initial_population: list[Vector], fitness: Callable[[Vector], float],
-             differential_weight: float, crossover_threshold: float, max_iterations: int) -> Vector:
+def differential_evolution(
+    initial_population: list[Vector], fitness: Callable[[Vector], float],
+    differential_weight: float, crossover_threshold: float, max_iterations: int
+) -> Vector:
     iteration = 0
     population = initial_population
     while iteration < max_iterations:
-        next_population = []
+        next_population: list[Vector] = []
         best_element = min(population, key=lambda el: fitness(el))
         for element in population:
             rand_element_1, rand_element_2 = choices(population, k=2)
