@@ -57,6 +57,7 @@ def es_mu_plus_lambda(initial_population: list[Vector], fitness: Callable[[Vecto
         if new_best_fitness < best_fitness:
             best_element, best_fitness = new_best_element, new_best_fitness
 
+        population = [(element, mutation_strength, fitness(element)) for element, mutation_strength, _ in population]
         population = do_succession(population, new_population)
         iteration += 1
 
