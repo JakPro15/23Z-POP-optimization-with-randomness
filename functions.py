@@ -1,5 +1,7 @@
 import numpy as np
 from numpy.typing import NDArray
+from typing import Callable
+from random import normalvariate
 
 Vector = NDArray[np.float64]
 
@@ -26,3 +28,11 @@ def himmelblau(x: Vector) -> float:
 
 def eggholder(x: Vector) -> float:
     return -1 * (x[1] + 47) * np.sin(np.sqrt(np.abs((x[0] / 2) + x[1] + 47))) - x[0] * np.sin(np.sqrt(np.abs(x[0] - x[1] - 47)))
+
+
+def add_randomness(fitness: Callable[[Vector], float], sigma1: float, sigma2: float) -> Callable[[Vector], float]:
+    def fitness_with_randomness(x: Vector) -> float:
+        zeta1 = np.ones_like(x) * normalvariate(0, sigma1)
+        zeta2 = normalvariate(0, sigma2)
+        return fitness(x + zeta1) + zeta2
+    return fitness_with_randomness
