@@ -28,7 +28,7 @@ def himmelblau(x: Vector) -> float:
 
 def eggholder(x: Vector) -> float:
     if x[0] < -512 or x[0] > 512 or x[1] < -512 or x[1] > 512:
-        return np.inf
+        return sphere(x)
     return -1 * (x[1] + 47) * np.sin(np.sqrt(np.abs((x[0] / 2) + x[1] + 47))) - x[0] * np.sin(np.sqrt(np.abs(x[0] - x[1] - 47)))
 
 
