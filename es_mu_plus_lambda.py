@@ -2,7 +2,6 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Callable
 from random import choices, normalvariate, shuffle, uniform
-from copy import deepcopy
 
 Vector = NDArray[np.float64]
 
@@ -18,7 +17,7 @@ def do_mutation(population: list[tuple[Vector, Vector]]) -> list[tuple[Vector, V
 
 
 def do_crossover(population: list[tuple[Vector, Vector]]) -> list[tuple[Vector, Vector]]:
-    parents = deepcopy(population)
+    parents = population.copy()
     shuffle(parents)
     result: list[tuple[Vector, Vector]] = []
     for i in range(len(parents)):
