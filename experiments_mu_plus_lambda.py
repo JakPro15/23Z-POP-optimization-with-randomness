@@ -24,8 +24,8 @@ def do_es_experiment(
         random.seed(seed_value)
         initial_population = get_initial_population(mu, dimensions)
         randomized_function = add_randomness(function, sigma1, sigma2)
-        result = es_mu_plus_lambda(initial_population, randomized_function, lambd,
-                                    initial_mutation_strength, 1000)
+        result, _ = es_mu_plus_lambda(initial_population, randomized_function, lambd,
+                                      initial_mutation_strength, 500)
         result_fitness = function(result)
         results.append(result_fitness)
     average = statistics.mean(results)
