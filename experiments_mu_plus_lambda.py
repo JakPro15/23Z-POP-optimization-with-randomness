@@ -35,33 +35,34 @@ def do_es_experiment(
     return average, std_deviation, min_score, max_score
 
 
-function_index = int(sys.argv[1])
-function = [ackley, sphere, poly, disturbed_square, himmelblau, eggholder][function_index]
-dimensions_options = [2] if function_index >= 4 else [10, 30, 50]
-file_name = f'experiment_results/es_mu_plus_lambda_{function.__name__}.csv'
+if __name__ == "__main__":
+    function_index = int(sys.argv[1])
+    function = [ackley, sphere, poly, disturbed_square, himmelblau, eggholder][function_index]
+    dimensions_options = [2] if function_index >= 4 else [10, 30, 50]
+    file_name = f'experiment_results/es_mu_plus_lambda_{function.__name__}.csv'
 
-counter = 0
-try:
-    with open(file_name, 'r') as file:
-        file_length = sum([1 for _ in file])
-except Exception:
-    file_length = 0
+    counter = 0
+    try:
+        with open(file_name, 'r') as file:
+            file_length = sum([1 for _ in file])
+    except Exception:
+        file_length = 0
 
-for sigma1 in [0.1, 1, 10]:
-    for sigma2 in [0.1, 1, 10]:
-        for dimensions in dimensions_options:
-            for mu in [10, 20, 30]:
-                for lambd in [5 * mu, 7 * mu, 9 * mu]:
-                    for initial_mutation_strength in [0.1, 1, 10]:
-                        counter += 1
-                        if counter <= file_length:
-                            continue
+    for sigma1 in [0, 1, 10]:
+        for sigma2 in [0, 1, 10]:
+            for dimensions in dimensions_options:
+                for mu in [10, 20, 30]:
+                    for lambd in [5 * mu, 7 * mu, 9 * mu]:
+                        for initial_mutation_strength in [0.1, 1, 10]:
+                            counter += 1
+                            if counter <= file_length:
+                                continue
 
-                        average, std_deviation, min_score, max_score =  do_es_experiment(
-                            function, sigma1, sigma2, dimensions, mu, lambd, initial_mutation_strength
-                        )
-                        with open(file_name, 'a+') as file:
-                            file.write(
-                                f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength}," + \
-                                f"{average},{std_deviation},{min_score},{max_score}\n"
+                            average, std_deviation, min_score, max_score =  do_es_experiment(
+                                function, sigma1, sigma2, dimensions, mu, lambd, initial_mutation_strength
                             )
+                            with open(file_name, 'a+') as file:
+                                file.write(
+                                    f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength}," + \
+                                    f"{average},{std_deviation},{min_score},{max_score}\n"
+                                )
