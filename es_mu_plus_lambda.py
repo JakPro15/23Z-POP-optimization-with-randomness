@@ -11,7 +11,7 @@ def do_mutation(population: list[tuple[Vector, Vector]]) -> list[tuple[Vector, V
     for element, mutation_strength in population:
         a = normalvariate(0, 1)
         b = np.random.normal(0, 1, size=element.shape)
-        mutation_strength *= np.exp(a / np.sqrt(2 * len(element) + b / np.sqrt(2 * np.sqrt(len(element)))))
+        mutation_strength *= np.exp(a / np.sqrt(2 * len(element)) + b / np.sqrt(2 * np.sqrt(len(element))))
         assert isinstance(mutation_strength, np.ndarray)
         element += mutation_strength * np.random.normal(0, 1, size=element.shape)
     return population
