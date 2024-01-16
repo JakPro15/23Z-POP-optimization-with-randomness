@@ -26,9 +26,15 @@ def himmelblau(x: Vector) -> float:
     return np.square(np.square(x[0]) + x[1] - 11) + np.square(x[0] + np.square(x[1]) - 7)
 
 
+def check_bounds(x: float) -> float:
+    return np.abs(x + 512 - 2048 * np.floor((x + 1024 + 512) / 2048)) - 512
+
+
 def eggholder(x: Vector) -> float:
-    if x[0] < -512 or x[0] > 512 or x[1] < -512 or x[1] > 512:
-        return sphere(x)
+    x[0] = check_bounds(x[0])
+    x[1] = check_bounds(x[1])
+    assert -512 <= x[0] <= 512
+    assert -512 <= x[1] <= 512
     return -1 * (x[1] + 47) * np.sin(np.sqrt(np.abs((x[0] / 2) + x[1] + 47))) - x[0] * np.sin(np.sqrt(np.abs(x[0] - x[1] - 47)))
 
 
