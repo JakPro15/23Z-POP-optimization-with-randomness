@@ -33,8 +33,6 @@ def check_bounds(x: float) -> float:
 def eggholder(x: Vector) -> float:
     x[0] = check_bounds(x[0])
     x[1] = check_bounds(x[1])
-    assert -512 <= x[0] <= 512
-    assert -512 <= x[1] <= 512
     return -1 * (x[1] + 47) * np.sin(np.sqrt(np.abs((x[0] / 2) + x[1] + 47))) - x[0] * np.sin(np.sqrt(np.abs(x[0] - x[1] - 47)))
 
 
