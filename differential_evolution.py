@@ -20,7 +20,7 @@ def differential_evolution(
     differential_weight: float, crossover_threshold: float, max_iterations: int
 ) -> tuple[Vector, list[Vector]]:
     iteration = 0
-    best_elements = []
+    best_elements: list[Vector] = []
 
     population = initial_population
     while iteration < max_iterations:

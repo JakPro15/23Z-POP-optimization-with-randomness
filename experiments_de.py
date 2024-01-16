@@ -52,7 +52,7 @@ if __name__ == "__main__":
             for dimensions in dimensions_options:
                 for population_size in [10, 20, 30]:
                     for differential_weight in [0.4, 0.8, 1.4]:
-                        for crossover_threshold in [0.0, 0.4, 0.8]:
+                        for crossover_threshold in [0.4, 0.7, 1]:
                             counter += 1
                             if counter <= file_length:
                                 continue
