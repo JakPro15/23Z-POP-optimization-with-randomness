@@ -18,12 +18,15 @@ def do_crossover(element_1: Vector, element_2: Vector, threshold: float) -> Vect
 def differential_evolution(
     initial_population: list[Vector], fitness: Callable[[Vector], float],
     differential_weight: float, crossover_threshold: float, max_iterations: int
-) -> Vector:
+) -> tuple[Vector, list[Vector]]:
     iteration = 0
+    best_elements = []
+
     population = initial_population
     while iteration < max_iterations:
         next_population: list[Vector] = []
         best_element = min(population, key=lambda el: fitness(el))
+        best_elements.append(best_element)
         for element in population:
             rand_element_1, rand_element_2 = choices(population, k=2)
             mutation_element = best_element + differential_weight * \
@@ -31,8 +34,11 @@ def differential_evolution(
             crossover_element = do_crossover(
                 element, mutation_element, crossover_threshold)
             next_population.append(
-                min([element, crossover_element], key=lambda el: fitness(el)))
+                min(element, crossover_element, key=lambda el: fitness(el)))
         population = next_population
         iteration += 1
 
-    return max(population, key=lambda el: fitness(el))
+    best_element = min(population, key=lambda el: fitness(el))
+    best_elements.append(best_element)
+
+    return best_element, best_elements
