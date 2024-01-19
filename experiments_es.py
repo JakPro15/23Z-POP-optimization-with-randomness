@@ -56,11 +56,11 @@ if __name__ == "__main__":
                 for mu in [10, 20, 30]:
                     for lambd in [5 * mu, 7 * mu, 9 * mu]:
                         for initial_mutation_strength in [0.1, 1, 10]:
-                            max_iterations = (MAX_FUNCTION_CALLS - mu) // (mu + lambd)
                             counter += 1
                             if counter <= file_length:
                                 continue
 
+                            max_iterations = (MAX_FUNCTION_CALLS - mu) // (mu + lambd)
                             average, std_deviation, min_score, max_score =  do_es_experiment(
                                 function, sigma1, sigma2, dimensions, mu, lambd, initial_mutation_strength, max_iterations
                             )
