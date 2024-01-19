@@ -12,7 +12,7 @@ MAX_FUNCTION_CALLS = 150_000
 
 
 def get_initial_population(size: int, dimensions: int) -> list[Vector]:
-    return [np.random.uniform(-1000, 1000, size=dimensions) for _ in range(size)]
+    return [np.random.uniform(-512, 512, size=dimensions) for _ in range(size)]
 
 
 def do_es_experiment(
@@ -55,7 +55,7 @@ if __name__ == "__main__":
             for dimensions in dimensions_options:
                 for mu in [10, 20, 30]:
                     for lambd in [5 * mu, 7 * mu, 9 * mu]:
-                        for initial_mutation_strength in [0.1, 1, 10]:
+                        for initial_mutation_strength in [5, 20, 50]:
                             counter += 1
                             if counter <= file_length:
                                 continue
@@ -66,6 +66,6 @@ if __name__ == "__main__":
                             )
                             with open(file_name, 'a+') as file:
                                 file.write(
-                                    f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength},{max_iterations}" + \
+                                    f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength},{max_iterations}," + \
                                     f"{average},{std_deviation},{min_score},{max_score}\n"
                                 )

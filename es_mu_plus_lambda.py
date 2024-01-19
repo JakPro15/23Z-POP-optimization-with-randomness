@@ -36,13 +36,11 @@ def do_succession(
 
 def es_mu_plus_lambda(
     initial_population: list[Vector], fitness: Callable[[Vector], float], lambd: int,
-    intial_mutation_strength: float, max_iterations: int
+    initial_mutation_strength: float, max_iterations: int
 ) -> tuple[Vector, list[Vector]]:
     iteration = 0
-    population = [(element, np.ones_like(element, dtype=np.float64) * intial_mutation_strength, fitness(element))
+    population = [(element, np.ones_like(element, dtype=np.float64) * initial_mutation_strength, fitness(element))
                   for element in initial_population]
-    best_element, _, _ = min(population, key=lambda x: x[2])
-    best_element = best_element.copy()
 
     best_elements: list[Vector] = []
 
@@ -58,7 +56,7 @@ def es_mu_plus_lambda(
         best_elements.append(min(population, key=lambda x: x[2])[0])
         iteration += 1
 
-    return best_element, best_elements
+    return min(population, key=lambda x: x[2])[0], best_elements
 
 # mu + (mu + lambda) * maxiter = calls
 # maxiter = (calls - mu) // (mu + lambda)
