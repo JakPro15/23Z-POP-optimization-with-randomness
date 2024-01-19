@@ -6,8 +6,9 @@ import statistics
 import sys
 from es_mu_plus_lambda import es_mu_plus_lambda
 
-
 Vector = NDArray[np.float64]
+
+MAX_FUNCTION_CALLS = 150_000
 
 
 def get_initial_population(size: int, dimensions: int) -> list[Vector]:
@@ -16,7 +17,8 @@ def get_initial_population(size: int, dimensions: int) -> list[Vector]:
 
 def do_es_experiment(
     function: Callable[[Vector], float], sigma1: float, sigma2: float,
-    dimensions: int, mu: int, lambd: int, initial_mutation_strength: float
+    dimensions: int, mu: int, lambd: int, initial_mutation_strength: float,
+    max_iterations: int
 ) -> tuple[float, float, float, float]:
     results: list[float] = []
     for seed_value in range(25):
@@ -25,7 +27,7 @@ def do_es_experiment(
         initial_population = get_initial_population(mu, dimensions)
         randomized_function = add_randomness(function, sigma1, sigma2)
         result, _ = es_mu_plus_lambda(initial_population, randomized_function, lambd,
-                                      initial_mutation_strength, 500)
+                                      initial_mutation_strength, max_iterations)
         result_fitness = function(result)
         results.append(result_fitness)
     average = statistics.mean(results)
@@ -48,21 +50,22 @@ if __name__ == "__main__":
     except Exception:
         file_length = 0
 
-    for sigma1 in [0, 1, 10]:
-        for sigma2 in [0, 1, 10]:
+    for sigma1 in [1, 10]:
+        for sigma2 in [1, 10]:
             for dimensions in dimensions_options:
                 for mu in [10, 20, 30]:
                     for lambd in [5 * mu, 7 * mu, 9 * mu]:
                         for initial_mutation_strength in [0.1, 1, 10]:
+                            max_iterations = (MAX_FUNCTION_CALLS - mu) // (mu + lambd)
                             counter += 1
                             if counter <= file_length:
                                 continue
 
                             average, std_deviation, min_score, max_score =  do_es_experiment(
-                                function, sigma1, sigma2, dimensions, mu, lambd, initial_mutation_strength
+                                function, sigma1, sigma2, dimensions, mu, lambd, initial_mutation_strength, max_iterations
                             )
                             with open(file_name, 'a+') as file:
                                 file.write(
-                                    f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength}," + \
+                                    f"{function.__name__},{sigma1},{sigma2},{dimensions},{mu},{lambd},{initial_mutation_strength},{max_iterations}" + \
                                     f"{average},{std_deviation},{min_score},{max_score}\n"
                                 )
