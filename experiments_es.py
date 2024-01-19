@@ -55,7 +55,7 @@ if __name__ == "__main__":
             for dimensions in dimensions_options:
                 for mu in [10, 20, 30]:
                     for lambd in [5 * mu, 7 * mu, 9 * mu]:
-                        for initial_mutation_strength in [5, 20, 50]:
+                        for initial_mutation_strength in [1, 5, 10]:
                             counter += 1
                             if counter <= file_length:
                                 continue
