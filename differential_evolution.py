@@ -22,23 +22,27 @@ def differential_evolution(
     iteration = 0
     best_elements: list[Vector] = []
 
-    population = initial_population
+    population_fitnesses = [(element, fitness(element))
+                            for element in initial_population]
     while iteration < max_iterations:
-        next_population: list[Vector] = []
-        best_element = min(population, key=lambda el: fitness(el))
-        best_elements.append(best_element)
-        for element in population:
-            rand_element_1, rand_element_2 = choices(population, k=2)
-            mutation_element = best_element + differential_weight * \
-                (rand_element_1 - rand_element_2)
+        next_population_fitnesses: list[tuple[Vector, float]] = []
+
+        best_element = min(population_fitnesses, key=lambda el: el[1])
+        best_elements.append(best_element[0])
+        for element in population_fitnesses:
+            rand_element_1, rand_element_2 = choices(population_fitnesses, k=2)
+            mutation_element = best_element[0] + differential_weight * \
+                (rand_element_1[0] - rand_element_2[0])
             crossover_element = do_crossover(
-                element, mutation_element, crossover_threshold)
-            next_population.append(
-                min(element, crossover_element, key=lambda el: fitness(el)))
-        population = next_population
+                element[0], mutation_element, crossover_threshold)
+            crossover_element = (crossover_element, fitness(crossover_element))
+            next_population_fitnesses.append(
+                min(element, crossover_element, key=lambda el: el[1]))
+        population_fitnesses = [(el, fitness(el))
+                                for el, _ in next_population_fitnesses]
         iteration += 1
 
-    best_element = min(population, key=lambda el: fitness(el))
+    best_element = min(population_fitnesses, key=lambda el: el[1])[0]
     best_elements.append(best_element)
 
     return best_element, best_elements
