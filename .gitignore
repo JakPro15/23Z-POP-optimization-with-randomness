@@ -3,3 +3,4 @@ __pycache__/
 experiment_results/
 less_old_experiment_results/
 old_experiment_results/
+venv/
