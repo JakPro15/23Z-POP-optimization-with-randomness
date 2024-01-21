@@ -16,8 +16,12 @@ def do_de_experiment(
     for seed_value in range(25):
         np.random.seed(seed_value)
         random.seed(seed_value)
-        initial_population = get_initial_population(
-            population_size, dimensions)
+        if function == ackley:
+            initial_population = get_initial_population(
+                population_size, dimensions, 32)
+        else:
+            initial_population = get_initial_population(
+                population_size, dimensions, 512)
         randomized_function = add_randomness(function, sigma1, sigma2)
         result, _ = differential_evolution(initial_population, randomized_function, differential_weight,
                                            crossover_threshold, max_iterations)
