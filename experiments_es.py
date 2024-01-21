@@ -18,14 +18,13 @@ def do_es_experiment(
         np.random.seed(seed_value)
         random.seed(seed_value)
         if function == ackley:
-            initial_population = get_initial_population(
-                mu, dimensions, 32)
+            range_ = 32
         else:
-            initial_population = get_initial_population(
-                mu, dimensions, 512)
+            range_ = 512
+        initial_population = get_initial_population(mu, dimensions, range_)
         randomized_function = add_randomness(function, sigma1, sigma2)
         result, _ = es_mu_plus_lambda(initial_population, randomized_function, lambd,
-                                      initial_mutation_strength, max_iterations)
+                                      2 * range_ * initial_mutation_strength, max_iterations)
         result_fitness = function(result)
         results.append(result_fitness)
     average = statistics.mean(results)
@@ -54,7 +53,7 @@ if __name__ == "__main__":
             for dimensions in dimensions_options:
                 for mu in [10, 20, 30]:
                     for lambd in [5 * mu, 7 * mu, 9 * mu]:
-                        for initial_mutation_strength in [1, 5, 10]:
+                        for initial_mutation_strength in [0.02, 0.1, 0.5]:
                             counter += 1
                             if counter <= file_length:
                                 continue
