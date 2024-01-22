@@ -25,31 +25,49 @@ def get_plot_data(best_de: list[tuple[int, float, float, int]],
     SEED_COUNT = 25
 
     for i in range(param_start, min(param_end, len(params))):
+
+        function, sigma1, sigma2, dimensions = params[i]
+        pop_size, diff_weight, cross_thresh, max_iter_de = best_de[i]
+        mu, lambd, init_mut_strength, max_iter_es_mu = best_es_mu[i]
+
         results_de = []
         results_es_mu = []
         for seed_value in range(SEED_COUNT):
             np.random.seed(seed_value)
             random.seed(seed_value)
             randomized_function = add_randomness(
-                params[i][0], params[i][1], params[i][2])
+                function, sigma1, sigma2)
 
-            initial_population_de = get_initial_population(
-                best_de[i][0], params[i][3])
+            if function == ackley:
+                initial_population_de = get_initial_population(
+                    pop_size, dimensions, 32)
+            else:
+                initial_population_de = get_initial_population(
+                    pop_size, dimensions, 512)
 
             point_de, result_de = differential_evolution(
-                initial_population_de, randomized_function, *best_de[i][1:])
+                initial_population_de, randomized_function, diff_weight, cross_thresh, max_iter_de)
 
-            results_de.append(np.array([params[i][0](el) for el in result_de]))
+            results_de.append(np.array([function(el) for el in result_de]))
             best_points_de[i].append(point_de)
 
-            initial_population_es_mu = get_initial_population(
-                best_es_mu[i][0], params[i][3])
+            np.random.seed(seed_value)
+            random.seed(seed_value)
+
+            if function == ackley:
+                initial_population_es_mu = get_initial_population(
+                    mu, dimensions, 32)
+                init_mut_strength *= 64
+            else:
+                initial_population_es_mu = get_initial_population(
+                    mu, dimensions, 512)
+                init_mut_strength *= 1024
 
             point_es_mu, result_es_mu = es_mu_plus_lambda(
-                initial_population_es_mu, randomized_function, *best_es_mu[i][1:])
+                initial_population_es_mu, randomized_function, lambd, init_mut_strength, max_iter_es_mu)
 
             results_es_mu.append(
-                np.array([params[i][0](el) for el in result_es_mu]))
+                np.array([function(el) for el in result_es_mu]))
             best_points_es_mu[i].append(point_es_mu)
 
             print(f"Iter: {i}, Seed: {seed_value} finished")
@@ -57,10 +75,10 @@ def get_plot_data(best_de: list[tuple[int, float, float, int]],
         curves_de[i] = np.add.reduce(results_de) / SEED_COUNT
         curves_es_mu[i] = np.add.reduce(results_es_mu) / SEED_COUNT
 
-        calls_de[i] = [best_de[i][0] + 2 * best_de[i]
-                       [0] * j for j in range(best_de[i][3] + 1)]
-        calls_es_mu[i] = [best_es_mu[i][0] + (best_es_mu[i][0] + best_es_mu[i][1]) * (
-            j + 1) for j in range(best_es_mu[i][3])]
+        calls_de[i] = [pop_size + 2 * pop_size *
+                       j for j in range(max_iter_de + 1)]
+        calls_es_mu[i] = [mu + (mu + lambd) * (j + 1)
+                          for j in range(max_iter_es_mu)]
 
 
 if __name__ == "__main__":
